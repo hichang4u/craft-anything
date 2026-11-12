@@ -1417,9 +1417,12 @@ Gaps found while using the app for real projects.
       default fonts: without craft-fonts they show as boxes, and with it each such letter comes from
       Noto Sans CJK while the rest of the word is DM Sans. Bundle a DM Sans build that has the
       Vietnamese set (with its OFL notice) so Tiếng Việt renders in one face
-- [ ] A build told craft-fonts are required (`CRAFT_FONTS_REQUIRED=1`) still finishes with none
-      embedded when `CRAFT_FONTS_DIR` is missing: the build script reads the switch only when the
-      folder is set and bad. Fail that build too
+- [x] A build told craft-fonts are required (`CRAFT_FONTS_REQUIRED=1`) finished with none
+      embedded when `CRAFT_FONTS_DIR` was missing: the build script read the switch only when the
+      folder was set and bad. It fails now for no folder, a bad one, and a manifest that lists no
+      fonts; `CRAFT_FONTS_REQUIRED` set to nothing or `0` means not required. The decision is
+      `plan` in `crates/ui-egui/build.rs`, tested from `tests/craft_fonts_build.rs`. Built for
+      real on Windows only
       — claimed: hichang4u, branch bugfix/r2.9-fonts-required
 - [x] An engine download the server can't answer right now (a 5xx, 429) says to try again later,
       not "update the pinned URL", which nobody installing an engine can do (#1193)

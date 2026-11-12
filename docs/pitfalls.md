@@ -492,6 +492,12 @@ merge state. Without CI, run its steps locally with `--locked`; a Mac can compil
 systems with `cargo check --target`, with zig as the C compiler for `ring` (a wrapper that drops the
 `--target=` flag `cc` adds), but that only proves it compiles.
 
+**A "required" switch read only on the failure path.** The build script looked at
+`CRAFT_FONTS_REQUIRED` only when `CRAFT_FONTS_DIR` was set and bad; with the folder variable
+missing, a build told the fonts were required finished with none embedded, and Korean showed as
+boxes. A requirement is checked on every path that ends without the thing, the missing input first;
+keep the decision in a function a test can call (`plan` in `crates/ui-egui/build.rs`).
+
 **Unformatted code reached `main`.** A test was edited by script after `cargo fmt --all` had run,
 so #53 merged with a long line rustfmt rewraps. Run `cargo fmt --all --check` last, after every
 edit, right before committing.
