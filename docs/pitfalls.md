@@ -736,6 +736,14 @@ the AI and its role while nothing was saved, and the error sat in the message ba
 window. Save to disk first and change memory only after it worked; replace files with a short retry
 on Windows (`write_atomic`); show errors where the person is looking.
 
+**A limit on what is kept, taken for a limit on the work.** `walk_dir` stopped keeping files at
+`max_files` but went on through the whole tree, read each folder's entries into one list before
+looking at any limit, and kept every folder and link it met: a tree of empty folders or links, or
+one folder with millions of names, had no limit at all. Count what is examined, not only what is
+kept; stop at the first thing over a limit; bound what is held while collecting (the first names in
+order, so a cut result is the same every time); and test the shapes that never reach the limit on
+the thing counted (no files, only links, one huge folder).
+
 **Showing settings shows their secrets.** `settings_show` returned the whole settings, plugins'
 `env` values included, which can hold API keys; a tool's output reaches the journal and MCP
 clients. The journal only redacts by field name. When a setting can hold a secret, hide its value

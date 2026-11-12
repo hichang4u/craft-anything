@@ -309,6 +309,11 @@ only when it's green and a maintainer has fully reviewed it, code as well as wor
       translations: `cargo xtask i18n-coverage` accepts strings listed as awaiting translation,
       and the translation PR empties the list
       — claimed: tanish2k09, branch chore/r5.2-awaiting-translation
+- [ ] `tools::android_tools::jeb::tests::not_configured_refused_and_remote_urls` fails now and
+      then: it binds port 0, drops the listener and expects nothing to answer there, while the
+      stand-in JEB servers of the tests beside it bind port 0 too and can be handed that port.
+      Seen once in six whole-suite runs on Windows 11: `engines_jeb_check` got a stand-in's answer.
+      Give the negative probe an address no other test can take
 
 ### R5.3 A builder that can't make progress stops
 Owner: open · Status: todo
@@ -1661,11 +1666,20 @@ Owner: open · Status: in progress
 - [x] AArch64 register and bitmask-immediate moves read their zero register: `mov x19, x0` (ORR from
       `xzr`) lifts to `x19 = xzr;` and `mov w0, #0xff00ff00` to `w0 = wzr;`. Move the last operand
       — claimed: htcom-code, branch bugfix/r3.11-a64-mov-alias-source
-- [ ] A folder walk (`walk_dir`) is bounded only by the files it keeps: after `max_files` it goes
-      on through the whole tree, it reads every entry of a folder before looking at a limit, and it
-      keeps every folder and link, so a tree of empty folders or links, or one huge folder, has no
-      limit. Bound what is examined and held
+- [x] A folder walk (`walk_dir`) was bounded only by the files it kept: after `max_files` it went
+      on through the whole tree, it read every entry of a folder before looking at a limit, and it
+      kept every folder and link, so a tree of empty folders or links, or one huge folder, had no
+      limit. `WalkLimits` bounds the entries examined and the path bytes held (from the file limit,
+      4,000,000 entries at most); one folder is listed through a bounded first-names-in-order
+      selection, so a cut listing is the same every time; the walk stops at the first file or entry
+      over a limit; cancel is checked while a folder is read. An ASAR's `.unpacked` folder and
+      `source_paths` folders say when their listing was cut. The tree-of-links test skipped itself
+      on the Windows account used (it can't create links); it needs a run on Linux or macOS
       — claimed: hichang4u, branch bugfix/r3.11-walk-limits
+- [ ] `walk_dir` still reads each `.gitignore` whole, whatever its size: cap it like other input
+      reads and say when one was skipped
+- [ ] The walk's limits are chosen, not measured (4,000,000 entries at most, 256 path bytes an
+      entry): time a walk at the ceiling on a real disk and measure what it holds
 
 ### R3.12 Format parser correctness
 Owner: open · Status: in progress

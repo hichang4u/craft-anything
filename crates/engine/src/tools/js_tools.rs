@@ -337,6 +337,9 @@ pub(crate) fn load_app_input(ctx: &Ctx<'_>, p: &AnalyzeParams) -> Result<(AppInp
             let walked =
                 walk_dir(&ep, &WalkOptions { max_files: p.max_files, max_depth: 48, skip_dir: &skip, gitignore: false, include_hidden: false }, &ctx.cancel)?;
             listing_truncated |= walked.truncated;
+            if walked.truncated {
+                input.notes.push(format!("{base}: the folder listing was cut short by the file-count or depth limit"));
+            }
             unlisted.extend(walked.unlisted.iter().map(|(rel, e)| (format!("{base}/{rel}"), e.clone())));
             for f in &walked.files {
                 let rel = format!("{base}/{}", f.rel);
