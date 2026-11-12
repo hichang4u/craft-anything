@@ -1661,6 +1661,11 @@ Owner: open · Status: in progress
 - [x] AArch64 register and bitmask-immediate moves read their zero register: `mov x19, x0` (ORR from
       `xzr`) lifts to `x19 = xzr;` and `mov w0, #0xff00ff00` to `w0 = wzr;`. Move the last operand
       — claimed: htcom-code, branch bugfix/r3.11-a64-mov-alias-source
+- [ ] A folder walk (`walk_dir`) is bounded only by the files it keeps: after `max_files` it goes
+      on through the whole tree, it reads every entry of a folder before looking at a limit, and it
+      keeps every folder and link, so a tree of empty folders or links, or one huge folder, has no
+      limit. Bound what is examined and held
+      — claimed: hichang4u, branch bugfix/r3.11-walk-limits
 
 ### R3.12 Format parser correctness
 Owner: open · Status: in progress
