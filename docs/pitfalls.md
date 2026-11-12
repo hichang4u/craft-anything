@@ -729,6 +729,13 @@ must never stand in for data that gets saved back: wait (it's startup), or keep 
 The model picker later captured a busy session as "no project", queried in the wrong directory,
 and rejected the save as a settings change. Capture settings and project under one guard; report
 contention, preserve the draft and matching background results, and check again when available.
+It happened again in the loader itself: `Settings::load_from` took every read error for "no file",
+so a config.toml that wasn't UTF-8, or that another program held for a moment, loaded as defaults
+and the next save replaced it; a file that couldn't be parsed was renamed aside with the rename's
+result ignored. Only "not found" means there's nothing to lose. Defaults that stand in for a file
+that is there carry that fact (`Settings::not_loaded`) and refuse to be saved, also through a
+serde round trip that would drop it (`with_setting`); a backup keeps every byte under a name
+nothing else has, and one that fails stops the save.
 
 **A save that changed memory first.** Adding an AI in the app put it in the session's settings,
 then the file write failed (on Windows, likely a virus scan holding config.toml), so the app showed

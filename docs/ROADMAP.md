@@ -1483,11 +1483,21 @@ Gaps found while using the app for real projects.
       — claimed: AlexJoaquimPereira, branch bugfix/r2.9-attached-builder-feed
 - [ ] A queued run's request lives in its `RunOptions` and the in-memory queue; an app exit before
       it starts loses it. Let the run side keep it (a queue record or a left note) across a restart
-- [ ] A config.toml that is there but can't be read (another program holds it, no permission, not
-      UTF-8) loads as defaults like a missing one, and the next save replaces it; one that can't be
-      parsed is renamed aside with the rename's result ignored. Only "not found" means there is
-      nothing to lose: defaults standing in for a file that is there must refuse to be saved
+- [x] A config.toml that is there but can't be read (another program holds it, no permission, not
+      UTF-8) loaded as defaults like a missing one, and the next save replaced it; one that couldn't
+      be parsed was renamed aside with the rename's result ignored. Only "not found" is plain
+      defaults now. A file that can't be understood (not TOML, not UTF-8) is set aside whole under
+      the first free name (`config.toml.broken`, `.broken.1`… up to 16). One that can't be read, or
+      can't be set aside, stays where it is, and the defaults standing in for it
+      (`Settings::not_loaded`) refuse `save_to` and a deferred save, also after `settings_set`'s
+      round trip. Tested on Windows with a file held without sharing; the Unix permission test
+      wasn't run here
       — claimed: hichang4u, branch bugfix/r2.9-config-not-loaded
+- [ ] When config.toml wasn't loaded (`Settings::not_loaded`), the app says so only in the log and
+      when a save fails: say it at startup where the person is looking, with the file's name
+- [ ] A config.toml that can't be read for a moment at startup (a virus scan or another program
+      holding it) isn't tried again, so the whole session runs on defaults and refuses every save:
+      try the read again for a short while before giving up
 
 ### R2.10 Pinned builds
 Owner: maintainers · Status: in progress
