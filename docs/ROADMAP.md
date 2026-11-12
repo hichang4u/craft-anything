@@ -1483,6 +1483,11 @@ Gaps found while using the app for real projects.
       — claimed: AlexJoaquimPereira, branch bugfix/r2.9-attached-builder-feed
 - [ ] A queued run's request lives in its `RunOptions` and the in-memory queue; an app exit before
       it starts loses it. Let the run side keep it (a queue record or a left note) across a restart
+- [ ] A config.toml that is there but can't be read (another program holds it, no permission, not
+      UTF-8) loads as defaults like a missing one, and the next save replaces it; one that can't be
+      parsed is renamed aside with the rename's result ignored. Only "not found" means there is
+      nothing to lose: defaults standing in for a file that is there must refuse to be saved
+      — claimed: hichang4u, branch bugfix/r2.9-config-not-loaded
 
 ### R2.10 Pinned builds
 Owner: maintainers · Status: in progress
